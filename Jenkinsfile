@@ -20,6 +20,12 @@
             }
         }
 
+        stage('Validate Package Manifest') {
+            steps {
+                sh 'npm ci --dry-run --ignore-scripts'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 sh 'npm ci'
@@ -29,6 +35,18 @@
         stage('Validate JavaScript') {
             steps {
                 sh 'node --check server.js'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh '''
+                    if node -e 'const packageJson = require("./package.json"); process.exit(packageJson.scripts && packageJson.scripts.test ? 0 : 1)'; then
+                        npm test
+                    else
+                        echo 'No test script is defined in package.json; skipping automated tests.'
+                    fi
+                '''
             }
         }
     }
