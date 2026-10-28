@@ -65,7 +65,7 @@ pipeline {
                 sh '''
                     test -d "$DEPLOY_DIR"
 
-                    rsync -a \
+                    rsync -a --no-owner --no-group \
                         --exclude='.git/' \
                         --exclude='node_modules/' \
                         --exclude='.env' \
