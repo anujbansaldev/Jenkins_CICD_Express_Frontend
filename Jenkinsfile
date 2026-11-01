@@ -65,7 +65,7 @@ pipeline {
                 sh '''
                     test -d "$DEPLOY_DIR"
 
-                    rsync -a --no-owner --no-group \
+                    rsync -r \
                         --exclude='.git/' \
                         --exclude='node_modules/' \
                         --exclude='.env' \
@@ -116,6 +116,7 @@ pipeline {
                         const fs = require("fs");
                         const response = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
                         const backendHealthy = response.backend && response.backend.status === "success";
+
                         if (response.status !== "success" || response.frontend !== "ok" || !backendHealthy) {
                             process.exit(1);
                         }
